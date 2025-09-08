@@ -96,12 +96,12 @@ class PayGateGlobalServiceTest extends TestCase
             'success_url' => 'https://example.com/success'
         ]);
 
-        $this->assertStringContains('paygateglobal.com/v1/page', $url);
-        $this->assertStringContains('token=test-token-123', $url);
-        $this->assertStringContains('amount=1000', $url);
-        $this->assertStringContains('identifier=ORDER123', $url);
-        $this->assertStringContains('description=Test+payment', $url);
-        $this->assertStringContains('url=https%3A%2F%2Fexample.com%2Fsuccess', $url);
+        $this->assertStringContainsString('paygateglobal.com/v1/page', $url);
+        $this->assertStringContainsString('token=test-token-123', $url);
+        $this->assertStringContainsString('amount=1000', $url);
+        $this->assertStringContainsString('identifier=ORDER123', $url);
+        $this->assertStringContainsString('description=Test+payment', $url);
+        $this->assertStringContainsString('url=https%3A%2F%2Fexample.com%2Fsuccess', $url);
     }
 
     public function test_generate_payment_url_with_return_url(): void
@@ -112,7 +112,7 @@ class PayGateGlobalServiceTest extends TestCase
             'return_url' => 'https://example.com/callback'
         ]);
 
-        $this->assertStringContains('url=https%3A%2F%2Fexample.com%2Fcallback', $url);
+        $this->assertStringContainsString('url=https%3A%2F%2Fexample.com%2Fcallback', $url);
     }
 
     public function test_check_payment_status(): void

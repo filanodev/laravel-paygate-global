@@ -19,6 +19,7 @@ class WebhookTest extends TestCase
         parent::setUp();
         
         config(['paygate-global.auth_token' => 'test-token-123']);
+        config(['app.key' => 'base64:'.base64_encode(random_bytes(32))]);
     }
 
     public function test_webhook_handles_payment_notification(): void
