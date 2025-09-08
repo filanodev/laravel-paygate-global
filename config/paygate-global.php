@@ -6,111 +6,62 @@ return [
     | PayGateGlobal Configuration
     |--------------------------------------------------------------------------
     |
-    | Configuration pour l'intégration PayGateGlobal
-    | Supports des paiements FLOOZ et TMONEY
+    | Configuration simplifiée pour l'intégration PayGateGlobal
+    | Support des paiements FLOOZ et TMONEY
     |
     */
 
     /*
     |--------------------------------------------------------------------------
-    | Auth Token (Clé API)
+    | Auth Token (Clé API) - OBLIGATOIRE
     |--------------------------------------------------------------------------
     |
     | Votre jeton d'authentification fourni par PayGateGlobal
+    | Exemple: xxxx-xxxxx-468c-81aa-xxxxxxxx
     |
     */
-    'auth_token' => env('PAYGATE_GLOBAL_AUTH_TOKEN', ''),
+    'auth_token' => env('PAYGATE_GLOBAL_AUTH_TOKEN'),
 
     /*
     |--------------------------------------------------------------------------
-    | Base URL
+    | Webhook Secret - OPTIONNEL
     |--------------------------------------------------------------------------
     |
-    | L'URL de base pour l'API PayGateGlobal
+    | Secret pour valider les webhooks (recommandé pour la sécurité)
+    | Si non défini, les webhooks ne seront pas validés
     |
     */
-    'base_url' => env('PAYGATE_GLOBAL_BASE_URL', 'https://paygateglobal.com/api/v1'),
+    'webhook_secret' => env('PAYGATE_GLOBAL_WEBHOOK_SECRET'),
 
     /*
     |--------------------------------------------------------------------------
-    | Payment Page URL
+    | Timeout - OPTIONNEL
     |--------------------------------------------------------------------------
     |
-    | L'URL pour la page de paiement PayGateGlobal (Méthode 2)
-    |
-    */
-    'payment_page_url' => env('PAYGATE_GLOBAL_PAYMENT_URL', 'https://paygateglobal.com/v1/page'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Webhook Secret
-    |--------------------------------------------------------------------------
-    |
-    | Secret pour valider les webhooks (optionnel)
-    |
-    */
-    'webhook_secret' => env('PAYGATE_GLOBAL_WEBHOOK_SECRET', ''),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Timeout
-    |--------------------------------------------------------------------------
-    |
-    | Timeout pour les requêtes HTTP en secondes
+    | Timeout pour les requêtes HTTP en secondes (défaut: 30)
     |
     */
     'timeout' => env('PAYGATE_GLOBAL_TIMEOUT', 30),
 
     /*
     |--------------------------------------------------------------------------
-    | Logging
+    | Logging - OPTIONNEL
     |--------------------------------------------------------------------------
     |
-    | Activer/désactiver le logging des requêtes
+    | Activer/désactiver le logging des requêtes (défaut: true)
     |
     */
     'log_requests' => env('PAYGATE_GLOBAL_LOG_REQUESTS', true),
 
     /*
     |--------------------------------------------------------------------------
-    | Networks
+    | Callback URL - IMPORTANT
     |--------------------------------------------------------------------------
     |
-    | Réseaux supportés
+    | URL où PayGateGlobal enverra les notifications de paiement
+    | Si non définie, utilisera l'URL par défaut du webhook du package
+    | Format: https://votre-site.com/paygate-global/webhook
     |
     */
-    'networks' => [
-        'FLOOZ' => 'FLOOZ',
-        'TMONEY' => 'TMONEY',
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Webhook Route
-    |--------------------------------------------------------------------------
-    |
-    | Route pour recevoir les notifications de paiement
-    |
-    */
-    'webhook_route' => env('PAYGATE_GLOBAL_WEBHOOK_ROUTE', 'paygate-global/webhook'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Success URL
-    |--------------------------------------------------------------------------
-    |
-    | URL de redirection après un paiement réussi
-    |
-    */
-    'success_url' => env('PAYGATE_GLOBAL_SUCCESS_URL', '/payment/success'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Cancel URL
-    |--------------------------------------------------------------------------
-    |
-    | URL de redirection après annulation du paiement
-    |
-    */
-    'cancel_url' => env('PAYGATE_GLOBAL_CANCEL_URL', '/payment/cancel'),
+    'callback_url' => env('PAYGATE_GLOBAL_CALLBACK_URL'),
 ];

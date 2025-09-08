@@ -2,8 +2,8 @@
 
 Un package Laravel pour l'intégration facile des paiements **PayGateGlobal** avec support pour **FLOOZ** et **TMONEY**.
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/paygate/laravel-paygate-global.svg?style=flat-square)](https://packagist.org/packages/paygate/laravel-paygate-global)
-[![License](https://img.shields.io/packagist/l/paygate/laravel-paygate-global.svg?style=flat-square)](https://packagist.org/packages/paygate/laravel-paygate-global)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/filano/laravel-paygate-global.svg?style=flat-square)](https://packagist.org/packages/filano/laravel-paygate-global)
+[![License](https://img.shields.io/packagist/l/filano/laravel-paygate-global.svg?style=flat-square)](https://packagist.org/packages/filano/laravel-paygate-global)
 
 ## Fonctionnalités
 
@@ -19,7 +19,7 @@ Un package Laravel pour l'intégration facile des paiements **PayGateGlobal** av
 ## Installation
 
 ```bash
-composer require paygate/laravel-paygate-global
+composer require filano/laravel-paygate-global
 ```
 
 ### Publication des fichiers
@@ -37,16 +37,22 @@ php artisan migrate
 
 ## Configuration
 
-Ajoutez vos clés PayGateGlobal dans votre fichier `.env`:
+Ajoutez votre clé API PayGateGlobal dans votre fichier `.env`:
 
 ```env
+# OBLIGATOIRE
 PAYGATE_GLOBAL_AUTH_TOKEN=xxxx-xxxxx-468c-81aa-xxxxxxxx
-PAYGATE_GLOBAL_BASE_URL=https://paygateglobal.com/api/v1
-PAYGATE_GLOBAL_PAYMENT_URL=https://paygateglobal.com/v1/page
+
+# IMPORTANT - URL où PayGateGlobal enverra les notifications de paiement
+# Si non définie, utilisera: https://votre-site.com/paygate-global/webhook
+PAYGATE_GLOBAL_CALLBACK_URL=https://votre-site.com/paygate-global/webhook
+
+# OPTIONNEL - Pour la sécurité des webhooks (recommandé)
 PAYGATE_GLOBAL_WEBHOOK_SECRET=votre-secret-webhook
-PAYGATE_GLOBAL_WEBHOOK_ROUTE=paygate-global/webhook
-PAYGATE_GLOBAL_SUCCESS_URL=/payment/success
-PAYGATE_GLOBAL_CANCEL_URL=/payment/cancel
+
+# OPTIONNEL - Paramètres avancés (valeurs par défaut)
+PAYGATE_GLOBAL_TIMEOUT=30
+PAYGATE_GLOBAL_LOG_REQUESTS=true
 ```
 
 ## Utilisation
@@ -78,9 +84,10 @@ $paymentUrl = PayGateGlobal::generatePaymentUrl([
     'amount' => 5000,
     'identifier' => 'ORDER_123',
     'description' => 'Commande #123',
-    'url' => url('/payment/callback'), // URL de retour
-    'phone' => '+22890123456',
-    'network' => 'FLOOZ'
+    'success_url' => url('/payment/success'), // URL après paiement réussi
+    // ou 'return_url' => url('/payment/callback'), // Alternative
+    'phone' => '+22890123456', // Optionnel - pré-remplir
+    'network' => 'FLOOZ' // Optionnel - pré-sélectionner
 ]);
 
 // Rediriger l'utilisateur
@@ -129,6 +136,18 @@ $disbursement = PayGateGlobal::disburse([
 ```
 
 ## Gestion des Webhooks
+
+### Configuration du webhook
+
+PayGateGlobal enverra automatiquement les notifications de paiement à votre URL de callback.
+
+**URL de callback par défaut :** `https://votre-site.com/paygate-global/webhook`
+
+```php
+// Obtenir l'URL de callback configurée
+$callbackUrl = PayGateGlobal::getCallbackUrl();
+echo $callbackUrl; // https://votre-site.com/paygate-global/webhook
+```
 
 ### Écouter les paiements
 
@@ -231,11 +250,14 @@ composer test
 
 Le fichier `config/paygate-global.php` permet de personnaliser:
 
-- URLs des APIs
-- Timeouts des requêtes
-- Routes des webhooks
-- URLs de redirection
-- Activation du logging
+- **auth_token** : Votre clé API PayGateGlobal (obligatoire)
+- **callback_url** : URL où PayGateGlobal enverra les notifications (important)
+- **webhook_secret** : Secret pour valider les webhooks (optionnel, recommandé)
+- **timeout** : Délai d'expiration des requêtes HTTP (défaut: 30s)
+- **log_requests** : Activer le logging des requêtes (défaut: true)
+
+Les URLs de l'API PayGateGlobal sont hardcodées dans le service (elles ne changent pas).
+Les URLs de redirection se passent directement lors de l'appel à `generatePaymentUrl()`.
 
 ## Support
 

@@ -9,14 +9,19 @@ use Illuminate\Support\Facades\Log;
 class PayGateGlobalService
 {
     protected $client;
-    protected $baseUrl;
     protected $authToken;
+    
+    const BASE_URL = 'https://paygateglobal.com/api/v1';
+    const PAYMENT_PAGE_URL = 'https://paygateglobal.com/v1/page';
 
     public function __construct()
     {
         $this->client = new Client();
-        $this->baseUrl = config('paygate-global.base_url', 'https://paygateglobal.com/api/v1');
         $this->authToken = config('paygate-global.auth_token');
+        
+        if (!$this->authToken) {
+            throw new \InvalidArgumentException('PayGateGlobal: auth_token est requis. Vérifiez votre configuration.');
+        }
     }
 
     public function initiatePayment(array $params): array
@@ -50,15 +55,32 @@ class PayGateGlobalService
             'identifier' => $params['identifier'],
         ];
 
-        $optionalParams = ['description', 'url', 'phone', 'network'];
+        $optionalParams = ['description', 'phone', 'network'];
         foreach ($optionalParams as $param) {
             if (isset($params[$param])) {
                 $queryParams[$param] = $params[$param];
             }
         }
 
-        $baseUrl = config('paygate-global.payment_page_url', 'https://paygateglobal.com/v1/page');
-        return $baseUrl . '?' . http_build_query($queryParams);
+        // URLs de redirection dynamiques
+        if (isset($params['success_url'])) {
+            $queryParams['url'] = $params['success_url'];
+        } elseif (isset($params['return_url'])) {
+            $queryParams['url'] = $params['return_url'];
+        }
+
+        return self::PAYMENT_PAGE_URL . '?' . http_build_query($queryParams);
+    }
+
+    public function getCallbackUrl(): string
+    {
+        $configUrl = config('paygate-global.callback_url');
+        
+        if ($configUrl) {
+            return $configUrl;
+        }
+        
+        return url('paygate-global/webhook');
     }
 
     public function checkPaymentStatus(string $txReference): array
@@ -133,7 +155,7 @@ class PayGateGlobalService
     protected function makeRequest(string $method, string $endpoint, array $data = []): array
     {
         try {
-            $url = $this->baseUrl . $endpoint;
+            $url = self::BASE_URL . $endpoint;
             
             $response = $this->client->request($method, $url, [
                 'json' => $data,

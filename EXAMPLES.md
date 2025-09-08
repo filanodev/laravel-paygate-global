@@ -5,15 +5,25 @@ Ce fichier contient des exemples pratiques d'utilisation du package Laravel PayG
 ## Installation rapide
 
 ```bash
-composer require paygate/laravel-paygate-global
+composer require filano/laravel-paygate-global
 php artisan vendor:publish --tag=paygate-global-config
 ```
 
 ## Configuration .env
 
 ```env
+# Configuration minimale
 PAYGATE_GLOBAL_AUTH_TOKEN=xxxx-xxxxx-468c-81aa-xxxxxxxx
+
+# URL de callback pour les notifications de paiement (important)
+PAYGATE_GLOBAL_CALLBACK_URL=https://votre-site.com/paygate-global/webhook
+
+# Sécurité (recommandé)
 PAYGATE_GLOBAL_WEBHOOK_SECRET=votre-secret-webhook
+
+# Optionnel (valeurs par défaut)
+PAYGATE_GLOBAL_TIMEOUT=30
+PAYGATE_GLOBAL_LOG_REQUESTS=true
 ```
 
 ## Exemples d'utilisation
@@ -80,9 +90,9 @@ class PaymentController extends Controller
             'amount' => $request->amount,
             'identifier' => $identifier,
             'description' => 'Commande #' . $identifier,
-            'url' => route('payment.callback'),
-            'phone' => $request->phone ?? '',
-            'network' => $request->network ?? ''
+            'success_url' => route('payment.callback'), // URL de retour après paiement
+            'phone' => $request->phone ?? '', // Pré-remplir le numéro (optionnel)
+            'network' => $request->network ?? '' // Pré-sélectionner le réseau (optionnel)
         ]);
 
         return redirect($paymentUrl);
@@ -258,11 +268,13 @@ class DashboardController extends Controller
     {
         try {
             $balance = PayGateGlobal::checkBalance();
+            $callbackUrl = PayGateGlobal::getCallbackUrl();
             
             return view('admin.dashboard', [
                 'flooz_balance' => $balance['flooz'] ?? 0,
                 'tmoney_balance' => $balance['tmoney'] ?? 0,
-                'total_balance' => ($balance['flooz'] ?? 0) + ($balance['tmoney'] ?? 0)
+                'total_balance' => ($balance['flooz'] ?? 0) + ($balance['tmoney'] ?? 0),
+                'callback_url' => $callbackUrl // URL pour configurer dans PayGateGlobal
             ]);
         } catch (\Exception $e) {
             return view('admin.dashboard', [

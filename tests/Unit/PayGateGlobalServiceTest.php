@@ -25,7 +25,6 @@ class PayGateGlobalServiceTest extends TestCase
         parent::setUp();
         
         config(['paygate-global.auth_token' => 'test-token-123']);
-        config(['paygate-global.base_url' => 'https://api.test.com/v1']);
         
         $this->service = new PayGateGlobalService();
         $this->mockHandler = new MockHandler();
@@ -77,19 +76,43 @@ class PayGateGlobalServiceTest extends TestCase
         ]);
     }
 
+    public function test_constructor_throws_exception_without_auth_token(): void
+    {
+        config(['paygate-global.auth_token' => null]);
+        
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('PayGateGlobal: auth_token est requis');
+        
+        new PayGateGlobalService();
+    }
+
     public function test_generate_payment_url(): void
     {
         $url = $this->service->generatePaymentUrl([
             'amount' => 1000,
             'identifier' => 'ORDER123',
             'description' => 'Test payment',
-            'phone' => '+22890123456'
+            'phone' => '+22890123456',
+            'success_url' => 'https://example.com/success'
         ]);
 
+        $this->assertStringContains('paygateglobal.com/v1/page', $url);
         $this->assertStringContains('token=test-token-123', $url);
         $this->assertStringContains('amount=1000', $url);
         $this->assertStringContains('identifier=ORDER123', $url);
         $this->assertStringContains('description=Test+payment', $url);
+        $this->assertStringContains('url=https%3A%2F%2Fexample.com%2Fsuccess', $url);
+    }
+
+    public function test_generate_payment_url_with_return_url(): void
+    {
+        $url = $this->service->generatePaymentUrl([
+            'amount' => 1000,
+            'identifier' => 'ORDER123',
+            'return_url' => 'https://example.com/callback'
+        ]);
+
+        $this->assertStringContains('url=https%3A%2F%2Fexample.com%2Fcallback', $url);
     }
 
     public function test_check_payment_status(): void
