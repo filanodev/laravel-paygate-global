@@ -25,7 +25,7 @@ et ce projet adhère au [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Configuration via fichier .env
 - Tests unitaires et fonctionnels complets
 - Documentation complète en français
-- Support Laravel 8, 9, 10, 11, 12+
+- Support Laravel 8, 9, 10, 11, 12
 - Gestion des erreurs et logging avancé
 
 ### Fonctionnalités

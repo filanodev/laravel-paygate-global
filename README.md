@@ -14,7 +14,7 @@ Un package Laravel pour l'intégration facile des paiements **PayGateGlobal** av
 - ✅ **Consultation des soldes**
 - ✅ **Support FLOOZ et TMONEY**
 - ✅ **Tests complets inclus**
-- ✅ **Laravel 8, 9, 10, 11, 12+** compatible
+- ✅ **Laravel 8, 9, 10, 11, 12** compatible
 
 ## Installation
 
@@ -261,7 +261,7 @@ Les URLs de redirection se passent directement lors de l'appel à `generatePayme
 
 ## Support
 
-- **Laravel** : 8.x, 9.x, 10.x, 11.x, 12.x+
+- **Laravel** : 8.x, 9.x, 10.x, 11.x, 12.x
 - **PHP** : 8.0+
 - **PayGateGlobal** : API v1 et v2
 
