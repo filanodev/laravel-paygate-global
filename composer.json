@@ -1,0 +1,52 @@
+{
+    "name": "paygate/laravel-paygate-global",
+    "description": "Laravel package pour l'intégration de PayGateGlobal - Paiements FLOOZ et TMONEY",
+    "type": "library",
+    "keywords": [
+        "laravel",
+        "paygate",
+        "payment",
+        "flooz",
+        "tmoney",
+        "africa",
+        "mobile-money"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Filano",
+            "email": "filano@example.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "illuminate/support": "^8.0|^9.0|^10.0|^11.0",
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.0|^7.0|^8.0|^9.0",
+        "phpunit/phpunit": "^9.0|^10.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PayGate\\LaravelPayGateGlobal\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PayGate\\LaravelPayGateGlobal\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "PayGate\\LaravelPayGateGlobal\\Providers\\PayGateGlobalServiceProvider"
+            ],
+            "aliases": {
+                "PayGateGlobal": "PayGate\\LaravelPayGateGlobal\\Facades\\PayGateGlobal"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
