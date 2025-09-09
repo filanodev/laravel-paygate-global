@@ -64,4 +64,15 @@ return [
     |
     */
     'callback_url' => env('PAYGATE_GLOBAL_CALLBACK_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | SSL Verification - DÉVELOPPEMENT
+    |--------------------------------------------------------------------------
+    |
+    | Vérification SSL pour les appels API (défaut: true)
+    | Mettre à false uniquement en développement local
+    |
+    */
+    'verify_ssl' => env('PAYGATE_GLOBAL_VERIFY_SSL', true),
 ];

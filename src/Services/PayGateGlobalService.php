@@ -12,11 +12,19 @@ class PayGateGlobalService
     protected $authToken;
     
     const BASE_URL = 'https://paygateglobal.com/api/v1';
+    const BASE_URL_V2 = 'https://paygateglobal.com/api/v2';
     const PAYMENT_PAGE_URL = 'https://paygateglobal.com/v1/page';
 
     public function __construct()
     {
-        $this->client = new Client();
+        // Configuration Guzzle pour ignorer SSL en développement
+        $options = [];
+        if (config('app.env') === 'local' && !config('paygate-global.verify_ssl', true)) {
+            $options['verify'] = false;
+            $options['http_errors'] = false;
+        }
+        
+        $this->client = new Client($options);
         $this->authToken = config('paygate-global.auth_token');
         
         if (!$this->authToken) {
@@ -100,7 +108,7 @@ class PayGateGlobalService
             'identifier' => $identifier,
         ];
 
-        return $this->makeRequest('POST', '/v2/status', $data);
+        return $this->makeRequestV2('POST', '/status', $data);
     }
 
     public function checkBalance(): array
@@ -157,20 +165,101 @@ class PayGateGlobalService
         try {
             $url = self::BASE_URL . $endpoint;
             
-            $response = $this->client->request($method, $url, [
-                'json' => $data,
+            $options = [
                 'headers' => [
                     'Content-Type' => 'application/json',
                     'Accept' => 'application/json',
                 ],
+                'json' => $data,
                 'timeout' => config('paygate-global.timeout', 30),
-            ]);
+            ];
 
-            $body = $response->getBody()->getContents();
-            return json_decode($body, true) ?? [];
+            // Log de la requête si activé
+            if (config('paygate-global.log_requests', true)) {
+                Log::info('PayGateGlobal Request', [
+                    'method' => $method,
+                    'url' => $url,
+                    'data' => $data
+                ]);
+            }
+
+            $response = $this->client->request($method, $url, $options);
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            // Log de la réponse si activé
+            if (config('paygate-global.log_requests', true)) {
+                Log::info('PayGateGlobal Response', [
+                    'status' => $response->getStatusCode(),
+                    'data' => $responseData
+                ]);
+            }
+
+            return $responseData ?: [];
 
         } catch (RequestException $e) {
             $errorMessage = 'PayGateGlobal API Error: ' . $e->getMessage();
+            
+            if ($e->hasResponse()) {
+                $response = $e->getResponse();
+                $body = $response->getBody()->getContents();
+                $errorMessage .= ' Response: ' . $body;
+                
+                Log::error($errorMessage, [
+                    'status_code' => $response->getStatusCode(),
+                    'response_body' => $body,
+                    'request_data' => $data,
+                ]);
+
+                $responseData = json_decode($body, true);
+                if ($responseData) {
+                    return $responseData;
+                }
+            } else {
+                Log::error($errorMessage, ['request_data' => $data]);
+            }
+
+            throw new \Exception($errorMessage);
+        }
+    }
+
+    protected function makeRequestV2(string $method, string $endpoint, array $data = []): array
+    {
+        try {
+            $url = self::BASE_URL_V2 . $endpoint;
+            
+            $options = [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Accept' => 'application/json',
+                ],
+                'json' => $data,
+                'timeout' => config('paygate-global.timeout', 30),
+            ];
+
+            // Log de la requête si activé
+            if (config('paygate-global.log_requests', true)) {
+                Log::info('PayGateGlobal Request V2', [
+                    'method' => $method,
+                    'url' => $url,
+                    'data' => $data
+                ]);
+            }
+
+            $response = $this->client->request($method, $url, $options);
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            // Log de la réponse si activé
+            if (config('paygate-global.log_requests', true)) {
+                Log::info('PayGateGlobal Response V2', [
+                    'status' => $response->getStatusCode(),
+                    'data' => $responseData
+                ]);
+            }
+
+            return $responseData ?: [];
+
+        } catch (RequestException $e) {
+            $errorMessage = 'PayGateGlobal API V2 Error: ' . $e->getMessage();
             
             if ($e->hasResponse()) {
                 $response = $e->getResponse();

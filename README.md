@@ -53,6 +53,10 @@ PAYGATE_GLOBAL_WEBHOOK_SECRET=votre-secret-webhook
 # OPTIONNEL - Paramètres avancés (valeurs par défaut)
 PAYGATE_GLOBAL_TIMEOUT=30
 PAYGATE_GLOBAL_LOG_REQUESTS=true
+
+# DÉVELOPPEMENT UNIQUEMENT - SSL Certificate
+# Désactiver la vérification SSL en environnement local (défaut: true)
+PAYGATE_GLOBAL_VERIFY_SSL=false
 ```
 
 ## Utilisation
@@ -255,9 +259,21 @@ Le fichier `config/paygate-global.php` permet de personnaliser:
 - **webhook_secret** : Secret pour valider les webhooks (optionnel, recommandé)
 - **timeout** : Délai d'expiration des requêtes HTTP (défaut: 30s)
 - **log_requests** : Activer le logging des requêtes (défaut: true)
+- **verify_ssl** : Vérification SSL pour les appels API (défaut: true, false pour développement local)
 
-Les URLs de l'API PayGateGlobal sont hardcodées dans le service (elles ne changent pas).
-Les URLs de redirection se passent directement lors de l'appel à `generatePaymentUrl()`.
+### Endpoints API supportés
+
+Le package utilise automatiquement les bons endpoints:
+- **API v1** (`https://paygateglobal.com/api/v1`) : Paiements, statut par tx_reference
+- **API v2** (`https://paygateglobal.com/api/v2`) : Statut par identifier personnalisé
+
+### Résolution des problèmes SSL
+
+En développement local, si vous rencontrez des erreurs SSL (cURL error 60), ajoutez dans votre `.env`:
+```env
+PAYGATE_GLOBAL_VERIFY_SSL=false
+```
+⚠️ **Important** : Ne jamais désactiver SSL en production !
 
 ## Support
 
