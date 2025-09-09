@@ -1,9 +1,23 @@
 # Laravel PayGateGlobal
 
-Un package Laravel pour l'intégration facile des paiements **PayGateGlobal** avec support pour **FLOOZ** et **TMONEY**.
+Un package Laravel **non-officiel** pour l'intégration facile des paiements **PayGateGlobal** avec support pour **FLOOZ** et **TMONEY**.
+
+> 📝 **Package communautaire** développé par [Filano](https://me.fedapay.com/filano_don) pour aider les développeurs à intégrer plus rapidement PayGateGlobal dans leurs applications Laravel.
+
+**PayGateGlobal** est le premier intégrateur et leader de solutions monétiques au Togo, offrant la façon la plus rapide de recevoir des paiements en ligne via les portefeuilles mobiles africains.
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/filano/laravel-paygate-global.svg?style=flat-square)](https://packagist.org/packages/filano/laravel-paygate-global)
 [![License](https://img.shields.io/packagist/l/filano/laravel-paygate-global.svg?style=flat-square)](https://packagist.org/packages/filano/laravel-paygate-global)
+
+## 🌍 À propos de PayGateGlobal
+
+[PayGateGlobal](https://paygateglobal.com/) simplifie l'acceptation des paiements en ligne au Togo et en Afrique de l'Ouest :
+
+- **🚀 Intégration rapide** : API simple, intégration en 5 minutes
+- **🔒 Sécurisé** : Protection anti-fraude intégrée
+- **💳 Paiements mobiles** : FLOOZ (Moov Togo) et T-Money (Togocel)
+- **📊 Tableau de bord** : Interface pour voir les paiements et consulter les soldes
+- **💰 Tarification transparente** : 2.5% FLOOZ, 3% T-Money, sans frais cachés
 
 ## Fonctionnalités
 
@@ -15,6 +29,24 @@ Un package Laravel pour l'intégration facile des paiements **PayGateGlobal** av
 - ✅ **Support FLOOZ et TMONEY**
 - ✅ **Tests complets inclus**
 - ✅ **Laravel 8, 9, 10, 11, 12** compatible
+
+## 📋 Prérequis
+
+### Ouverture d'un compte PayGateGlobal
+
+1. **Créer un compte** sur [PayGateGlobal](https://paygateglobal.com/) (gratuit)
+2. **Fournir les documents** requis pour l'activation :
+   - Carte Formalités des Entreprises ou Carte d'Immatriculation Fiscale
+   - Carte d'Identité du Promoteur
+   - Descriptif du Projet
+   - Contact et lien de retour
+3. **Récupérer votre clé API** depuis le tableau de bord après activation
+
+### Paiements et reversements
+
+- **Solde FLOOZ** : Accessible à J+1 via module de remboursement (partenariat MOOV TOGO, ECOBANK, BAT)
+- **Solde T-Money** : Reversé tous les 10 jours par PayGate
+- **Frais** : 2.5% sur FLOOZ, 3% sur T-Money (aucun frais caché)
 
 ## Installation
 
@@ -34,6 +66,29 @@ php artisan vendor:publish --tag=paygate-global-migrations
 # Exécuter les migrations
 php artisan migrate
 ```
+
+## 🚀 Comment ça marche ?
+
+### Étape 1 : Créer un compte PayGateGlobal
+1. Remplissez le [formulaire d'inscription PayGateGlobal](https://paygateglobal.com/) (gratuit)
+2. Recevez l'email de confirmation avec les instructions
+3. Accédez à votre tableau de bord (compte inactif par défaut)
+
+### Étape 2 : Activer votre compte  
+1. Rendez-vous dans la page de profil de votre compte
+2. Fournissez les documents requis :
+   - Carte Formalités des Entreprises ou Carte d'Immatriculation Fiscale
+   - Carte d'Identité du Promoteur
+   - Descriptif du Projet
+   - Contact
+   - Lien de retour (callback URL)
+3. Votre compte est activé après vérification
+
+### Étape 3 : Intégrer en 5 minutes
+1. Installez ce package Laravel
+2. Configurez votre clé API (disponible dans le tableau de bord)
+3. Utilisez les méthodes du package pour accepter les paiements
+4. Vos clients peuvent payer immédiatement via FLOOZ ou T-Money
 
 ## Configuration
 
@@ -281,14 +336,75 @@ PAYGATE_GLOBAL_VERIFY_SSL=false
 - **PHP** : 8.0+
 - **PayGateGlobal** : API v1 et v2
 
+## 📞 Support PayGateGlobal
+
+### Contact PayGateGlobal
+- **Site web** : [https://paygateglobal.com/](https://paygateglobal.com/)
+- **Email** : info@paygateglobal.com
+- **Téléphone 1** : +228 96 96 21 21
+- **Téléphone 2** : +228 92 60 50 32
+
+### Adresse
+```
+26, Bld de la KARA
+Tokoin Forever
+Sis à côté de l'ambassade du Niger au 1er Étage
+Lomé – TOGO
+BP: 30230 Lomé
+```
+
+### Intégration et support technique
+- **Documentation officielle** : Disponible dans votre tableau de bord PayGateGlobal
+- **Guide d'intégration** : Lien rouge "guide d'intégration" après activation du compte
+- **Support développeur** : PayGateGlobal peut vous aider à finir l'intégration
+
+## FAQ PayGateGlobal
+
+### Différence entre URL de redirection et Callback URL
+- **URL de redirection** (`success_url`) : Ramène le client sur votre site après paiement
+- **Callback URL** : Endpoint pour recevoir les confirmations de paiement de PayGateGlobal (webhook)
+
+### Sécurité et fraude
+PayGateGlobal protège contre les fraudes grâce à :
+- Outils de prévention intégrés
+- Équipe de gestion des risques dédiée
+- Validation des signatures webhooks
+
+### Devises et moyens de paiement
+- **Devise** : FCFA uniquement
+- **Moyens de paiement actuels** : FLOOZ et T-Money
+- **Évolution** : VISA et MasterCard prévus prochainement
+
 ## Licence
 
 MIT License. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
-## Contributeur
+## 👨‍💻 À propos du package
 
-- **Filano** - Développeur principal
+Ce package Laravel a été développé par **Filano** pour aider les développeurs à intégrer plus rapidement PayGateGlobal dans leurs applications Laravel.
+
+### Développeur du package
+- **Filano** - Développeur indépendant
+- **Objectif** : Simplifier l'intégration PayGateGlobal pour la communauté des développeurs
+
+### 💝 Soutenir le développement
+
+Si ce package vous a fait gagner du temps, vous pouvez soutenir le développement :
+
+**[💰 Faire un don via FedaPay](https://me.fedapay.com/filano_don)**
+
+Votre soutien aide à maintenir et améliorer ce package pour toute la communauté !
+
+---
+
+**Note importante :** Ce package est un projet communautaire indépendant créé pour faciliter l'intégration de PayGateGlobal. Pour toute question relative au service PayGateGlobal lui-même (activation de compte, paiements, etc.), veuillez contacter directement PayGateGlobal.
 
 ## Changelog
 
 Voir [CHANGELOG.md](CHANGELOG.md) pour l'historique des versions.
+
+---
+
+*Package communautaire non-officiel développé par [Filano](https://me.fedapay.com/filano_don) pour faciliter l'intégration de PayGateGlobal dans les applications Laravel.*
+
+*PayGateGlobal © 2016 BHK Konsulting SARL*

@@ -1,6 +1,6 @@
 {
     "name": "filano/laravel-paygate-global",
-    "description": "Laravel package pour l'intégration de PayGateGlobal - Paiements FLOOZ et TMONEY",
+    "description": "Package Laravel non-officiel pour l'intégration facile de PayGateGlobal - Paiements FLOOZ et TMONEY",
     "type": "library",
     "keywords": [
         "laravel",
